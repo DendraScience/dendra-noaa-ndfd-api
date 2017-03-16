@@ -1,0 +1,21 @@
+{
+  "databases": {
+    "influx": {
+      "readings": false
+    },
+    "mongodb": {
+      "defaultLogger": {
+        "level": "error"
+      },
+      "metadata": {
+        "url": "MONGO_URL"
+      }
+    },
+    "mysql": {
+      "legacy": {
+        "url": "LEGACY_MYSQL_URL"
+      }
+    }
+  },
+  "port": 8080
+}

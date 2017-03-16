@@ -1,0 +1,23 @@
+{
+  "auth": {
+    "idField": "id",
+    "local": {},
+    "token": {
+      "secret": "ThYncCxLbjhin7YZBtZgda7nm0KSeT4rM0UsvpCnJXPA6sTVq6NKvsDoHjzyjkMKnB4gKDqsUx8Gg7mYsRbV9Q=="
+    }
+  },
+  "databases": {
+    "nedb": {
+      "cache": {
+        "paginate": {
+          "default": 20,
+          "max": 2000
+        },
+        "path": "../.cache"
+      }
+    }
+  },
+  "host": "localhost",
+  "port": 3031,
+  "public": "../dist/public/"
+}
