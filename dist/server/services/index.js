@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = function () {
   return function () {
     const app = this;
-    const serviceNames = ['cache_docs', 'ndfd_time-series'];
+    const serviceNames = ['cache_docs', 'ndfd'];
 
     // Feathers configuration is synchronous, so use promises to wait for
     // async stuff like database connections, etc.

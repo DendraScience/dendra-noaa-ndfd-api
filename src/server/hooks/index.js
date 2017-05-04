@@ -13,92 +13,15 @@
 // TODO: Query hooks should allow multiple fields to be specified?
 // TODO: Add option to ValidationContext for servicePath?
 
-const Ajv = require('ajv')
-const {errors} = require('feathers-errors')
 const {treeMap} = require('../lib/utils')
-const {ObjectID} = require('mongodb')
 
 // Regular expressions for data type detection
 // TODO: Capitalize these consts
-const idPathRegex = /^\/\w*_id(\/.*)?$/
 const isoDateRegex = /^([0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9]).([0-9]{3})Z$/i
-
-let validationContext // Singleton
-
-class ValidationContext {
-  constructor (app) {
-    this.app = app
-    this.validators = {}
-    this.ajv = new Ajv({
-      // TODO: Remove - deprecated
-      // coerceTypes: true,
-      loadSchema: this.loadSchema.bind(null, app)
-    })
-
-    // TODO: Remove - deprecated
-    // this.ajv.addKeyword('date', {
-    //   errors: false,
-    //   validate: (schema, data, parentSchema, dataPath, parentData, parentDataProperty) => {
-    //     if (!schema) return true
-
-    //     const ms = Date.parse(data)
-    //     if (!isNaN(ms)) {
-    //       parentData[parentDataProperty] = new Date(ms) // Coerce
-    //       return true
-    //     }
-    //     return false
-    //   }
-    // })
-
-    // TODO: Remove - deprecated
-    // this.ajv.addKeyword('objectID', {
-    //   errors: false,
-    //   validate: (schema, data, parentSchema, dataPath, parentData, parentDataProperty) => {
-    //     if (!schema) return true
-
-    //     if (ObjectID.isValid(data)) {
-    //       parentData[parentDataProperty] = new ObjectID(data.toString()) // Coerce
-    //       return true
-    //     }
-    //     return false
-    //   }
-    // })
-  }
-
-  /**
-   * Asynchronous function that will be used to load remote schemas when the
-   * method compileAsync is used and some reference is missing.
-   */
-  loadSchema (app, uri, callback) {
-    // TODO: Needs testing!!!
-    app.service('/system/schemas').get(uri, callback)
-  }
-
-  getValidator (schemaName) {
-    const self = this
-    const validate = self.validators[schemaName]
-
-    if (validate) return Promise.resolve(validate)
-
-    return self.app.service('/system/schemas').get(schemaName).then(schema => {
-      return new Promise((resolve, reject) => {
-        self.ajv.compileAsync(schema, function (err, validate) {
-          if (err) {
-            reject(err)
-          } else {
-            self.validators[schemaName] = validate // Cache in memory
-            resolve(validate)
-          }
-        })
-      })
-    })
-  }
-}
 
 function coercer (obj, path) {
   if (typeof obj !== 'string') return obj
 
-  if (idPathRegex.test(path) && ObjectID.isValid(obj)) return new ObjectID(obj.toString())
   if (isoDateRegex.test(obj)) {
     const ms = Date.parse(obj)
     if (!isNaN(ms)) return new Date(ms)
@@ -119,19 +42,6 @@ exports.coerceQuery = () => {
     hook.params.query = treeMap(hook.params.query, coercer)
   }
 }
-
-// TODO: Remove - deprecated
-// exports.objectIdQuery = (field) => {
-//   return (hook) => {
-//     const value = hook.params.query[field]
-//     if (typeof value === 'undefined') return
-
-//     hook.params.query[field] = treeMap(value, (obj) => {
-//       if (ObjectID.isValid(obj)) return new ObjectID(obj.toString())
-//       return obj
-//     })
-//   }
-// }
 
 exports.parseBoolQuery = (field) => {
   return (hook) => {
@@ -173,21 +83,5 @@ exports.timestamp = () => {
         hook.data.updated_at = new Date()
         break
     }
-  }
-}
-
-exports.validate = (schemaName) => {
-  return (hook) => {
-    if (!hook.params.provider) return // Skip for internal calls
-
-    // Lazy init to ensure the async loader gets an app reference
-    if (!validationContext) validationContext = new ValidationContext(hook.app)
-
-    return validationContext.getValidator(schemaName).then(validate => {
-      if (validate(hook.data)) return hook
-      throw new errors.BadRequest('Validation failed', {
-        errors: validate.errors
-      })
-    })
   }
 }

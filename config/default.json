@@ -19,5 +19,13 @@
   },
   "host": "localhost",
   "port": 3031,
-  "public": "../dist/public/"
+  "public": "../dist/public/",
+  "services": {
+    "ndfd_summarized": {
+      "url": "https://graphical.weather.gov/xml/sample_products/browser_interface/ndfdBrowserClientByDay.php"
+    },
+    "ndfd_unsummarized": {
+      "url": "https://graphical.weather.gov/xml/sample_products/browser_interface/ndfdXMLclient.php"
+    }
+  }
 }
