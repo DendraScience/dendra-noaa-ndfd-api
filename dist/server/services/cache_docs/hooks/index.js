@@ -1,16 +1,21 @@
-"use strict";
+'use strict';
 
-// const globalHooks = require('../../../hooks')
-// const hooks = require('feathers-hooks')
+const globalHooks = require('../../../hooks');
+const hooks = require('feathers-hooks-common');
 
 exports.before = {
   // all: [],
-  // find: [],
+
+  find: [globalHooks.coerceQuery()],
+
   // get: [],
-  // create: [],
-  // update: [],
-  // patch: [],
-  // remove: []
+
+  create: [hooks.disallow('rest'), globalHooks.timestamp()],
+
+  update: [hooks.disallow('rest'), globalHooks.timestamp()],
+
+  patch: hooks.disallow('rest'),
+  remove: hooks.disallow('rest')
 };
 
 exports.after = {

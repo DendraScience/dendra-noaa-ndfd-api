@@ -1,21 +1,10 @@
 {
-  "databases": {
-    "influx": {
-      "readings": false
-    },
-    "mongodb": {
-      "defaultLogger": {
-        "level": "error"
-      },
-      "metadata": {
-        "url": "MONGO_URL"
-      }
-    },
-    "mysql": {
-      "legacy": {
-        "url": "LEGACY_MYSQL_URL"
-      }
+  "port": 8080,
+  "tasks": {
+    "cache_grooming": {
+      "docLimit": 20,
+      "retentionHours": 72,
+      "timerSeconds": [600, 900]
     }
-  },
-  "port": 8080
+  }
 }

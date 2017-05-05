@@ -5,7 +5,8 @@ module.exports = (function () {
     const app = this
     const serviceNames = [
       'cache_docs',
-      'ndfd'
+      'ndfd',
+      'series'
     ]
 
     // Feathers configuration is synchronous, so use promises to wait for

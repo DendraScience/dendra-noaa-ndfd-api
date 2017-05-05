@@ -19,6 +19,7 @@ const socketio = require('feathers-socketio')
 const databases = require('./databases')
 const services = require('./services')
 const middleware = require('./middleware')
+const tasks = require('./tasks')
 
 const app = feathers()
 
@@ -41,6 +42,7 @@ app.use(compress())
   .configure(databases)
   .configure(services)
   .configure(middleware)
+  .configure(tasks)
 
 // TODO: Handle SIGTERM gracefully for Docker
 // SEE: http://joseoncode.com/2014/07/21/graceful-shutdown-in-node-dot-js/

@@ -19,13 +19,13 @@ exports.before = {
 
     if (query.lng) query.lon = query.lng;
     if (query.unit) query.Unit = query.unit;
-  }, hooks.removeQuery('lng', 'unit')]
+  }, hooks.removeQuery('lng', 'unit')],
 
-  // get: [],
-  // create: [],
-  // update: [],
-  // patch: [],
-  // remove: []
+  get: hooks.disallow(),
+  create: hooks.disallow(),
+  update: hooks.disallow(),
+  patch: hooks.disallow(),
+  remove: hooks.disallow()
 };
 
 exports.summarizedBefore = {

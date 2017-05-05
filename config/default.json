@@ -26,6 +26,19 @@
     },
     "ndfd_unsummarized": {
       "url": "https://graphical.weather.gov/xml/sample_products/browser_interface/ndfdXMLclient.php"
+    },
+    "series": {
+      "paginate": {
+        "default": 20,
+        "max": 2000
+      }
+    }
+  },
+  "tasks": {
+    "cache_grooming": {
+      "docLimit": 20,
+      "retentionHours": 24,
+      "timerSeconds": [10, 15]
     }
   }
 }

@@ -23,13 +23,13 @@ exports.before = {
     },
 
     hooks.removeQuery('lng', 'unit')
-  ]
+  ],
 
-  // get: [],
-  // create: [],
-  // update: [],
-  // patch: [],
-  // remove: []
+  get: hooks.disallow(),
+  create: hooks.disallow(),
+  update: hooks.disallow(),
+  patch: hooks.disallow(),
+  remove: hooks.disallow()
 }
 
 exports.summarizedBefore = {
