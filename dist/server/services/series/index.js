@@ -10,11 +10,11 @@ function hashId(obj) {
 }
 
 function dateSortPredicateAsc(a, b) {
-  return a.time.startDate.getTime() - b.time.startDate.getTime();
+  return a.time.start_date.getTime() - b.time.start_date.getTime();
 }
 
 function dateSortPredicateDesc(a, b) {
-  return b.time.startDate.getTime() - a.time.startDate.getTime();
+  return b.time.start_date.getTime() - a.time.start_date.getTime();
 }
 
 /**

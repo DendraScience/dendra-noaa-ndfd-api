@@ -64,7 +64,7 @@ class DWMLLocation {
 
   toJSON() {
     const obj = {
-      locationKey: this.locationKey,
+      location_key: this.locationKey,
       point: this.point
     };
 
@@ -114,17 +114,17 @@ class DWMLTimeLayout {
       const startString = startEls[i].firstChild.nodeValue;
       const startMoment = moment.parseZone(startString);
       const obj = {
-        startDate: startMoment.toDate(),
-        startOffset: startMoment.utcOffset() * 60,
-        startString: startString
+        start_date: startMoment.toDate(),
+        start_offset: startMoment.utcOffset() * 60,
+        start_string: startString
       };
 
       if (endEls[i]) {
         const endString = endEls[i].firstChild.nodeValue;
         const endMoment = moment.parseZone(endString);
-        obj.endDate = endMoment.toDate();
-        obj.endOffset = endMoment.utcOffset() * 60;
-        obj.endString = endString;
+        obj.end_date = endMoment.toDate();
+        obj.end_offset = endMoment.utcOffset() * 60;
+        obj.end_string = endString;
       }
 
       yield obj;
@@ -133,9 +133,9 @@ class DWMLTimeLayout {
 
   toJSON() {
     const obj = {
-      layoutKey: this.layoutKey,
-      parsedKey: this.parsedKey,
-      timeCoordinate: this.timeCoordinate
+      layout_key: this.layoutKey,
+      parsed_key: this.parsedKey,
+      time_coordinate: this.timeCoordinate
     };
 
     return obj;
@@ -170,12 +170,12 @@ class DWMLParameter {
 
   toJSON() {
     const obj = {
-      elementName: this.elementName,
+      element_name: this.elementName,
       name: this.name,
       type: this.type
     };
     if (this.location) obj.location = this.location.toJSON();
-    if (this.timeLayout) obj.timeLayout = this.timeLayout.toJSON();
+    if (this.timeLayout) obj.time_layout = this.timeLayout.toJSON();
 
     return obj;
   }
@@ -212,7 +212,9 @@ class DWMLConditionsIconsParameter extends DWMLParameter {
       if (validTime) {
         yield {
           time: validTime,
-          url: iconLink
+          data: {
+            url: iconLink
+          }
         };
       }
     }
@@ -276,11 +278,81 @@ class DWMLUnitsParameter extends DWMLParameter {
   }
 }
 
+const WEATHER_CONDITIONS_VALUE_ATTRIBUTES = {
+  'coverage': 'coverage',
+  'intensity': 'intensity',
+  'additive': 'additive',
+  'weather-type': 'weather_type',
+  'qualifier': 'qualifier'
+};
+
+class DWMLWeatherParameter extends DWMLParameter {
+  get weatherConditions() {
+    return Array.from(this.weatherConditionsGen());
+  }
+
+  *weatherConditionsGen() {
+    const attrNames = Object.keys(WEATHER_CONDITIONS_VALUE_ATTRIBUTES);
+    const weatherConditionsEls = this.element.getElementsByTagName('weather-conditions');
+
+    for (let i = 0; i < weatherConditionsEls.length; i++) {
+      const weatherConditionsEl = weatherConditionsEls[i];
+      const valueEls = weatherConditionsEl.getElementsByTagName('value');
+      const values = [];
+
+      for (let j = 0; j < valueEls.length; j++) {
+        const valueEl = valueEls[j];
+        const value = {};
+
+        // Map attribute names to field names
+        attrNames.forEach(attrName => {
+          const attrVal = valueEl.getAttribute(attrName);
+          if (attrVal) value[WEATHER_CONDITIONS_VALUE_ATTRIBUTES[attrName]] = attrVal;
+        });
+
+        values.push(value);
+      }
+
+      yield values;
+    }
+  }
+
+  get series() {
+    return Array.from(this.seriesGen());
+  }
+
+  *seriesGen() {
+    if (!this.timeLayout) return;
+
+    const validTimes = this.timeLayout.validTimes;
+    let i = 0;
+
+    for (const weatherConditions of this.weatherConditionsGen()) {
+      const validTime = validTimes[i++];
+
+      if (validTime) {
+        yield {
+          time: validTime,
+          data: weatherConditions
+        };
+      }
+    }
+  }
+
+  toJSON() {
+    const obj = super.toJSON();
+    obj.series = this.series;
+
+    return obj;
+  }
+}
+
 const ELEMENT_NAME_TO_PARAMETER_CLASS = {
   'conditions-icon': DWMLConditionsIconsParameter,
   'conditions-icons': DWMLConditionsIconsParameter,
   'probability-of-precipitation': DWMLUnitsParameter,
-  'temperature': DWMLUnitsParameter
+  'temperature': DWMLUnitsParameter,
+  'weather': DWMLWeatherParameter
 };
 
 class DWMLDocument {

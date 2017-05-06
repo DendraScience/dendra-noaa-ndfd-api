@@ -51,14 +51,22 @@ exports.after = {
           const len = Math.min(start + count, data.length)
           for (let i = start; i < len; i++) {
             const item = data[i]
-
             const newItem = {}
-            if (item.time.startDate) newItem.t = item.time.startDate
-            if (item.time.startOffset) newItem.o = item.time.startOffset
-            if (item.time.endDate) newItem.te = item.time.endDate
-            if (item.time.endOffset) newItem.oe = item.time.endOffset
-            if (item.url) newItem.url = item.url
-            if (item.value) newItem.v = item.value
+
+            // Compact time values
+            if (item.time.start_date) newItem.t = item.time.start_date
+            if (item.time.start_offset) newItem.o = item.time.start_offset
+            if (item.time.end_date) newItem.te = item.time.end_date
+            if (item.time.end_offset) newItem.oe = item.time.end_offset
+
+            // Compact data values
+            if (Array.isArray(item.data)) {
+              newItem.da = item.data
+            } else if (typeof item.data === 'object') {
+              newItem.d = item.data
+            }
+            if (typeof item.value === 'number') newItem.v = item.value
+            if (Array.isArray(item.values)) newItem.va = item.values
 
             data[i] = newItem
           }

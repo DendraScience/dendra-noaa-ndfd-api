@@ -2,9 +2,9 @@
   "port": 8080,
   "tasks": {
     "cache_grooming": {
-      "docLimit": 20,
-      "retentionHours": 72,
-      "timerSeconds": [600, 900]
+      "docLimit": 100,
+      "retentionMinutes": 60,
+      "timerSeconds": [300, 420]
     }
   }
 }

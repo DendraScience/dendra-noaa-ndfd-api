@@ -36,7 +36,7 @@ class Service {
     }).then(response => {
       if (response.statusCode !== 200) {
         return {
-          requestOptions: requestOpts,
+          request_options: requestOpts,
           response: response
         };
       }
@@ -52,7 +52,7 @@ class Service {
           const parameters = dwmlDoc.parameters.map(parameter => parameter.toJSON());
 
           resolve({
-            requestOptions: requestOpts,
+            request_options: requestOpts,
             parameters: parameters
           });
         });

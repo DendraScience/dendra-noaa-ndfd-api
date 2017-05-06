@@ -18,15 +18,15 @@ module.exports = function () {
       let docLimit = 20;
       if (typeof config.docLimit === 'number') docLimit = config.docLimit;
 
-      let retentionHours = 72;
-      if (typeof config.retentionHours === 'number') retentionHours = config.retentionHours;
+      let retentionMinutes = 60;
+      if (typeof config.retentionMinutes === 'number') retentionMinutes = config.retentionMinutes;
 
       const handleError = function (err) {
         app.logger.error(err);
       };
 
       const scheduleTask = function () {
-        let timerSeconds = 10;
+        let timerSeconds = 60;
         if (typeof config.timerSeconds === 'number') {
           timerSeconds = config.timerSeconds;
         } else if (Array.isArray(config.timerSeconds) && config.timerSeconds.length > 1) {
@@ -40,7 +40,7 @@ module.exports = function () {
 
           const docService = app.service('/cache/docs');
           const docQuery = {
-            $or: [{ updated_at: { $exists: false } }, { updated_at: { $lt: moment().utc().subtract(retentionHours, 'h').toISOString() } }],
+            $or: [{ updated_at: { $exists: false } }, { updated_at: { $lt: moment().utc().subtract(retentionMinutes, 'm').toISOString() } }],
             $limit: docLimit,
             $sort: {
               updated_at: -1
