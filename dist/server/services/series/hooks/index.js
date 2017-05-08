@@ -50,10 +50,19 @@ exports.after = {
             const newItem = {};
 
             // Compact time values
-            if (item.time.start_date) newItem.t = item.time.start_date;
-            if (item.time.start_offset) newItem.o = item.time.start_offset;
-            if (item.time.end_date) newItem.te = item.time.end_date;
-            if (item.time.end_offset) newItem.oe = item.time.end_offset;
+            const time = item.time;
+            if (time) {
+              if (time.start) {
+                newItem.t = time.start.date;
+                newItem.o = time.start.offset;
+              }
+              if (time.end) {
+                newItem.te = {
+                  t: time.end.date,
+                  o: time.end.offset
+                };
+              }
+            }
 
             // Compact data values
             if (Array.isArray(item.data)) {

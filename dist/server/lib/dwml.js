@@ -114,17 +114,21 @@ class DWMLTimeLayout {
       const startString = startEls[i].firstChild.nodeValue;
       const startMoment = moment.parseZone(startString);
       const obj = {
-        start_date: startMoment.toDate(),
-        start_offset: startMoment.utcOffset() * 60,
-        start_string: startString
+        start: {
+          date: startMoment.toDate(),
+          offset: startMoment.utcOffset() * 60,
+          string: startString
+        }
       };
 
       if (endEls[i]) {
         const endString = endEls[i].firstChild.nodeValue;
         const endMoment = moment.parseZone(endString);
-        obj.end_date = endMoment.toDate();
-        obj.end_offset = endMoment.utcOffset() * 60;
-        obj.end_string = endString;
+        obj.end = {
+          date: endMoment.toDate(),
+          offset: endMoment.utcOffset() * 60,
+          string: endString
+        };
       }
 
       yield obj;
