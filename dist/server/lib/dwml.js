@@ -157,6 +157,23 @@ class DWMLParameter {
     return this.element.nodeName;
   }
 
+  get keyPath() {
+    if (this._keyPath) return this._keyPath;
+
+    const p = [];
+
+    let k;
+    if (k = this.elementName) p.push(k);
+    if (k = this.type) p.push(k);
+    if (k = this.timeLayout) {
+      const pk = k.parsedKey;
+      if (pk.period) p.push(pk.period);
+      if (pk.times) p.push(pk.times);
+    }
+
+    return this._keyPath = `/${p.join('/')}`;
+  }
+
   get name() {
     if (this._name) return this._name;
 
@@ -171,6 +188,7 @@ class DWMLParameter {
   toJSON() {
     const obj = {
       element_name: this.elementName,
+      key_path: this.keyPath,
       name: this.name,
       type: this.type
     };
@@ -348,8 +366,10 @@ class DWMLWeatherParameter extends DWMLParameter {
 }
 
 const ELEMENT_NAME_TO_PARAMETER_CLASS = {
+  'cloud-amount': DWMLUnitsParameter,
   'conditions-icon': DWMLConditionsIconsParameter,
   'conditions-icons': DWMLConditionsIconsParameter,
+  'precipitation': DWMLUnitsParameter,
   'probability-of-precipitation': DWMLUnitsParameter,
   'temperature': DWMLUnitsParameter,
   'weather': DWMLWeatherParameter
@@ -424,3 +444,4 @@ exports.DWMLLocation = DWMLLocation;
 exports.DWMLParameter = DWMLParameter;
 exports.DWMLTimeLayout = DWMLTimeLayout;
 exports.DWMLUnitsParameter = DWMLUnitsParameter;
+exports.DWMLWeatherParameter = DWMLWeatherParameter;

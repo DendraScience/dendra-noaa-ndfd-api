@@ -75,7 +75,10 @@ class Service {
     }).then(doc => {
       // Find parameter in DWML doc
       const found = doc.parameters.find(parameter => {
-        return parameter.name === query.parameter.name
+        if (typeof query.parameter !== 'object') return false
+        if (query.parameter.key_path && parameter.key_path !== query.parameter.key_path) return false
+        if (query.parameter.name && parameter.name !== query.parameter.name) return false
+        return true
       })
 
       /*
