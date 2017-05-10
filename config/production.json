@@ -1,4 +1,15 @@
 {
+  "databases": {
+    "nedb": {
+      "cache": {
+        "paginate": {
+          "default": 20,
+          "max": 2000
+        },
+        "path": "/cache"
+      }
+    }
+  },
   "port": 8080,
   "tasks": {
     "cache_grooming": {
