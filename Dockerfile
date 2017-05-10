@@ -18,12 +18,12 @@ COPY package.json /home/node/app
 COPY npm-shrinkwrap.json /home/node/app
 RUN npm install
 
-# Create cache folder
-RUN mkdir /cache
-
 # Best practice: run as user 'node'
 USER node
 EXPOSE 8080
+
+# Create cache folder
+RUN mkdir -p /home/node/cache
 
 # Copy source dist; relies on .dockerignore
 # NOTE: Must perform 'npm run build' beforehand

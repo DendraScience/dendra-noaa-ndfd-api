@@ -6,7 +6,7 @@
           "default": 20,
           "max": 2000
         },
-        "path": "/cache"
+        "path": "/home/node/cache"
       }
     }
   },
