@@ -106,8 +106,10 @@ class DWMLTimeLayout {
     const endEls = this.element.getElementsByTagName('end-valid-time')
 
     for (let i = 0; i < startEls.length; i++) {
-      const startString = startEls[i].firstChild.nodeValue
+      const startEl = startEls[i]
+      const startString = startEl.firstChild.nodeValue
       const startMoment = moment.parseZone(startString)
+
       const obj = {
         start: {
           date: startMoment.toDate(),
@@ -116,8 +118,12 @@ class DWMLTimeLayout {
         }
       }
 
+      const periodName = startEl.getAttribute('period-name')
+      if (typeof periodName === 'string') obj.start.period_name = periodName
+
       if (endEls[i]) {
-        const endString = endEls[i].firstChild.nodeValue
+        const endEl = endEls[i]
+        const endString = endEl.firstChild.nodeValue
         const endMoment = moment.parseZone(endString)
         obj.end = {
           date: endMoment.toDate(),
@@ -314,6 +320,7 @@ class DWMLWeatherParameter extends DWMLParameter {
 
     for (let i = 0; i < weatherConditionsEls.length; i++) {
       const weatherConditionsEl = weatherConditionsEls[i]
+      const summary = weatherConditionsEl.getAttribute('weather-summary')
       const valueEls = weatherConditionsEl.getElementsByTagName('value')
       const values = []
 
@@ -330,7 +337,11 @@ class DWMLWeatherParameter extends DWMLParameter {
         values.push(value)
       }
 
-      yield values
+      const obj = {}
+      if (typeof summary === 'string') obj.summary = summary
+      if (values.length > 0) obj.values = values
+
+      yield obj
     }
   }
 

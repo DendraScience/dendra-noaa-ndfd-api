@@ -55,9 +55,14 @@ exports.after = {
               if (time.start) {
                 newItem.t = time.start.date;
                 newItem.o = time.start.offset;
+
+                // Include a 'time info' object for any extraneous time fields
+                if (time.start.period_name) newItem.ti = { period_name: time.start.period_name };
               }
+
+              // Include an 'end time' object when present
               if (time.end) {
-                newItem.te = {
+                newItem.et = {
                   t: time.end.date,
                   o: time.end.offset
                 };
