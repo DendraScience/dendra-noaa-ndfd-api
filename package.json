@@ -11,6 +11,7 @@
     "build-server": "npm run lint-server && npm run clean-server && npm run babel-server && npm run copy-views",
     "clean": "npm run clean-server",
     "clean-server": "rm -rf dist/server/*",
+    "empty-cache": "rm -f .cache/*.db",
     "copy-views": "cp -R src/server/views dist/server",
     "lint": "eslint src",
     "lint-server": "eslint src/server",

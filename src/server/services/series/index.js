@@ -1,6 +1,7 @@
 const crypto = require('crypto')
 const feathersQueryFilters = require('feathers-query-filters')
 const hooks = require('./hooks')
+const {SeqQueue} = require('../../lib/utils')
 
 function hashId (obj) {
   const data = JSON.stringify(obj)
@@ -23,6 +24,7 @@ function dateSortPredicateDesc (a, b) {
 class Service {
   constructor (options) {
     this.paginate = options.paginate || {}
+    this.queues = {}
   }
 
   setup (app) {
@@ -49,54 +51,66 @@ class Service {
       Generate doc id from hash of query params. Attempt to find a cached DWML doc, or find and cache a new one.
      */
 
-    return docService.get(docId).then(doc => {
-      // TODO: Touch doc to keep in cache longer
-      return doc
-    }).catch(err => {
-      if (err.code !== 404) return err
-
-      // Cached doc not found, so prepare a query for the NDFD service
-      const ndfdQuery = Object.assign({}, query)
-      delete ndfdQuery.interface
-      delete ndfdQuery.parameter
-
-      return ndfdQuery
-    }).then(docOrQuery => {
-      // If this is an existing doc, then use it - otherwise fetch a new DWML doc using the prepared query
-      if (docOrQuery._id) return docOrQuery
-
-      return this.app.service(`/ndfd/${query.interface}`).find({query: docOrQuery})
-    }).then(doc => {
-      // If this is an existing doc, then use it - otherwise cache the DWML doc
-      if (doc._id) return doc
-      doc._id = docId
-
-      return docService.create(doc)
-    }).then(doc => {
-      // Find parameter in DWML doc
-      const found = doc.parameters.find(parameter => {
-        if (typeof query.parameter !== 'object') return false
-        if (typeof query.parameter.key_path === 'string' && parameter.key_path.indexOf(query.parameter.key_path) !== 0) return false
-        if (typeof query.parameter.name === 'string' && parameter.name !== query.parameter.name) return false
-        return true
+    // Use a queue to manage concurrrent requests for the same docId
+    let queue = this.queues[docId]
+    if (!queue) {
+      queue = this.queues[docId] = new SeqQueue()
+      queue.once('empty', () => {
+        queue.cancel()
+        delete this.queues[docId]
       })
+    }
 
-      /*
-        Prepare and return response.
-       */
+    return queue.push(() => {
+      return docService.get(docId).then(doc => {
+        // TODO: Touch doc to keep in cache longer
+        return doc
+      }).catch(err => {
+        if (err.code !== 404) return err
 
-      const res = {
-        limit: filters.$limit,
-        data: found ? found.series : []
-      }
+        // Cached doc not found, so prepare a query for the NDFD service
+        const ndfdQuery = Object.assign({}, query)
+        delete ndfdQuery.interface
+        delete ndfdQuery.parameter
 
-      // Sort and trim
-      if ((typeof filters.$sort === 'object') && (typeof filters.$sort.time !== 'undefined')) {
-        res.data = filters.$sort.time === -1 ? res.data.sort(dateSortPredicateDesc) : res.data.sort(dateSortPredicateAsc)
-      }
-      if (res.data.length > filters.$limit) res.data.length = filters.$limit
+        return ndfdQuery
+      }).then(docOrQuery => {
+        // If this is an existing doc, then use it - otherwise fetch a new DWML doc using the prepared query
+        if (docOrQuery._id) return docOrQuery
 
-      return res
+        return this.app.service(`/ndfd/${query.interface}`).find({query: docOrQuery})
+      }).then(doc => {
+        // If this is an existing doc, then use it - otherwise cache the DWML doc
+        if (doc._id) return doc
+        doc._id = docId
+
+        return docService.create(doc)
+      }).then(doc => {
+        // Find parameter in DWML doc
+        const found = doc.parameters.find(parameter => {
+          if (typeof query.parameter !== 'object') return false
+          if (typeof query.parameter.key_path === 'string' && parameter.key_path.indexOf(query.parameter.key_path) !== 0) return false
+          if (typeof query.parameter.name === 'string' && parameter.name !== query.parameter.name) return false
+          return true
+        })
+
+        /*
+          Prepare and return response.
+         */
+
+        const res = {
+          limit: filters.$limit,
+          data: found ? found.series : []
+        }
+
+        // Sort and trim
+        if ((typeof filters.$sort === 'object') && (typeof filters.$sort.time !== 'undefined')) {
+          res.data = filters.$sort.time === -1 ? res.data.sort(dateSortPredicateDesc) : res.data.sort(dateSortPredicateAsc)
+        }
+        if (res.data.length > filters.$limit) res.data.length = filters.$limit
+
+        return res
+      })
     })
   }
 }
