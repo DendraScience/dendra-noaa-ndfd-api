@@ -56,3 +56,5 @@ Promise.resolve(app.get('middlewareReady')).then(() => {
 }).catch(err => {
   log.error(err)
 })
+
+exports.app = app // For testing

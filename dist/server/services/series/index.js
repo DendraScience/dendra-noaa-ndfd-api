@@ -103,10 +103,9 @@ class Service {
         const res = {
           limit: filters.$limit,
           data: found ? found.series : []
-        };
 
-        // Sort and trim
-        if (typeof filters.$sort === 'object' && typeof filters.$sort.time !== 'undefined') {
+          // Sort and trim
+        };if (typeof filters.$sort === 'object' && typeof filters.$sort.time !== 'undefined') {
           res.data = filters.$sort.time === -1 ? res.data.sort(dateSortPredicateDesc) : res.data.sort(dateSortPredicateAsc);
         }
         if (res.data.length > filters.$limit) res.data.length = filters.$limit;
