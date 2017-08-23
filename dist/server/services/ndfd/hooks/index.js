@@ -1,6 +1,7 @@
 'use strict';
 
-const globalHooks = require('../../../hooks');
+const apiHooks = require('@dendra-science/api-hooks-common');
+// const globalHooks = require('../../../hooks')
 const hooks = require('feathers-hooks-common');
 
 function formatDate(date) {
@@ -14,7 +15,7 @@ function formatDateTime(date) {
 exports.before = {
   // all: [],
 
-  find: [globalHooks.coerceQuery(), hook => {
+  find: [apiHooks.coerceQuery(), hook => {
     const query = hook.params.query;
 
     if (query.lng) query.lon = query.lng;

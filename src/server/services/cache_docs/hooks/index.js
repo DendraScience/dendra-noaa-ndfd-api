@@ -1,23 +1,24 @@
-const globalHooks = require('../../../hooks')
+const apiHooks = require('@dendra-science/api-hooks-common')
+// const globalHooks = require('../../../hooks')
 const hooks = require('feathers-hooks-common')
 
 exports.before = {
   // all: [],
 
   find: [
-    globalHooks.coerceQuery()
+    apiHooks.coerceQuery()
   ],
 
   // get: [],
 
   create: [
     hooks.disallow('rest'),
-    globalHooks.timestamp()
+    apiHooks.timestamp()
   ],
 
   update: [
     hooks.disallow('rest'),
-    globalHooks.timestamp()
+    apiHooks.timestamp()
   ],
 
   patch: hooks.disallow('rest'),

@@ -1,4 +1,5 @@
-const globalHooks = require('../../../hooks')
+const apiHooks = require('@dendra-science/api-hooks-common')
+// const globalHooks = require('../../../hooks')
 const hooks = require('feathers-hooks-common')
 const {errors} = require('feathers-errors')
 
@@ -6,7 +7,7 @@ exports.before = {
   // all: [],
 
   find: [
-    globalHooks.coerceQuery(),
+    apiHooks.coerceQuery(),
 
     (hook) => {
       /*

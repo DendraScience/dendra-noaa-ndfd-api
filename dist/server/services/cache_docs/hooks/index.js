@@ -1,18 +1,19 @@
 'use strict';
 
-const globalHooks = require('../../../hooks');
+const apiHooks = require('@dendra-science/api-hooks-common');
+// const globalHooks = require('../../../hooks')
 const hooks = require('feathers-hooks-common');
 
 exports.before = {
   // all: [],
 
-  find: [globalHooks.coerceQuery()],
+  find: [apiHooks.coerceQuery()],
 
   // get: [],
 
-  create: [hooks.disallow('rest'), globalHooks.timestamp()],
+  create: [hooks.disallow('rest'), apiHooks.timestamp()],
 
-  update: [hooks.disallow('rest'), globalHooks.timestamp()],
+  update: [hooks.disallow('rest'), apiHooks.timestamp()],
 
   patch: hooks.disallow('rest'),
   remove: hooks.disallow('rest')

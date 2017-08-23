@@ -1,4 +1,5 @@
-const globalHooks = require('../../../hooks')
+const apiHooks = require('@dendra-science/api-hooks-common')
+// const globalHooks = require('../../../hooks')
 const hooks = require('feathers-hooks-common')
 
 function formatDate (date) {
@@ -13,7 +14,7 @@ exports.before = {
   // all: [],
 
   find: [
-    globalHooks.coerceQuery(),
+    apiHooks.coerceQuery(),
 
     (hook) => {
       const query = hook.params.query

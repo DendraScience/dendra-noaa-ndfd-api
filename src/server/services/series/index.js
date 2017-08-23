@@ -52,6 +52,7 @@ class Service {
      */
 
     // Use a queue to manage concurrrent requests for the same docId
+    // TODO: Use TaskQueue instead!!!
     let queue = this.queues[docId]
     if (!queue) {
       queue = this.queues[docId] = new SeqQueue()
