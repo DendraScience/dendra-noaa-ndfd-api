@@ -1,10 +1,14 @@
 {
-  "name": "dendro-noaa-api",
+  "name": "dendra-noaa-ndfd-api",
   "version": "0.0.3",
-  "description": "Project Dendro NOAA API.",
+  "description": "Dendra internal API to the NOAA NDFD REST web service.",
   "license": "BSD-2-Clause-FreeBSD",
   "author": "J. Scott Smith <scott@newleafsolutionsinc.com>",
   "main": "dist/server/main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DendraScience/dendra-noaa-ndfd-api.git"
+  },
   "scripts": {
     "babel-server": "babel src/server -d dist/server",
     "build": "npm run build-server",
@@ -26,7 +30,7 @@
     "test-server:watch": "chokidar --initial 'src/server/**/*.js' 'test/server/**/*.js' -c 'npm run test-server:build'"
   },
   "engines": {
-    "node": ">=6.1.0"
+    "node": ">=6.11.0"
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",

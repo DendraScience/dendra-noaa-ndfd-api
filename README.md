@@ -1,4 +1,4 @@
-# Dendro NOAA API
+# Dendra NOAA NDFD API.
 
 TODO: Briefly describe this repo and Project Dendro
 

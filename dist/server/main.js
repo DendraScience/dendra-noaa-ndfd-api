@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * NOAA API Express server.
+ * NDFD API Express server.
  *
  * @author J. Scott Smith
  * @license BSD-2-Clause-FreeBSD

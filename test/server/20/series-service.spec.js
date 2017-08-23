@@ -34,29 +34,6 @@ describe('Service /series', function () {
   })
 
   describe('/series summarized #find()', function () {
-    it('should find using no time', function () {
-      return main.app.service('/series').find({query: {
-        lat: 33.2574,
-        lng: -116.4073,
-        unit: 'm',
-        parameter: {
-          key_path: '/probability-of-precipitation'
-        },
-        interface: 'summarized',
-        compact: true,
-        $limit: 200,
-        $sort: {
-          time: -1
-        }
-      }}).then(res => {
-        expect(res).to.have.nested.property('data.0').to.include({
-          o: (new Date).getTimezoneOffset() * -60
-        })
-        expect(res).to.have.nested.property('data.0.t').to.be.a('date')
-        expect(res).to.have.nested.property('data.0.v').to.be.a('number')
-      })
-    })
-
     it('should find using time', function () {
       const localM = moment().utc().subtract(8, 'h').startOf('d')
 
@@ -88,29 +65,6 @@ describe('Service /series', function () {
   })
 
   describe('/series unsummarized #find()', function () {
-    it('should find using no time', function () {
-      return main.app.service('/series').find({query: {
-        lat: 33.2574,
-        lng: -116.4073,
-        unit: 'm',
-        parameter: {
-          key_path: '/precipitation/liquid/p1h'
-        },
-        interface: 'unsummarized',
-        compact: true,
-        $limit: 200,
-        $sort: {
-          time: -1
-        }
-      }}).then(res => {
-        expect(res).to.have.nested.property('data.0').to.include({
-          o: (new Date).getTimezoneOffset() * -60
-        })
-        expect(res).to.have.nested.property('data.0.t').to.be.a('date')
-        expect(res).to.have.nested.property('data.0.v').to.be.a('number')
-      })
-    })
-
     it('should find using time', function () {
       const localM = moment().utc().subtract(8, 'h').startOf('d')
 
@@ -144,7 +98,7 @@ describe('Service /series', function () {
   describe('/cache/docs #find()', function () {
     it('should find', function () {
       return main.app.service('/cache/docs').find().then(res => {
-        expect(res).to.have.nested.property('data.length', 4)
+        expect(res).to.have.nested.property('data.length', 2)
       })
     })
   })
