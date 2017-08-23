@@ -1,15 +1,15 @@
-# Dendra NOAA NDFD API.
+# Dendra NOAA NDFD API
 
-TODO: Briefly describe this repo and Project Dendro
+Provides a Feathers service (REST API) wrapper around the NOAA NDFD REST web service. Used internally to obtain National Weather Service forecast data from the National Digital Forecast Database.
 
 
 ## Instructions
 
-1. Be sure you have Node version 6.5.x. If you’re using nvm, you may need to `nvm use 6.5.0`.
+1. Be sure you have Node version 6.11.x. If you’re using nvm, you may need to `nvm use 6.11`.
 
 2. Clone this repo.
 
-3. Make this project directory the current directory, i.e. `cd dendro-noaa-api`.
+3. Make this project directory the current directory, i.e. `cd dendra-noaa-ndfd-api`.
 
 4. Install modules via `npm install`.
 
@@ -18,10 +18,10 @@ TODO: Briefly describe this repo and Project Dendro
 
 ## To build and publish the Docker image
 
-1. Make this project directory the current directory, i.e. `cd dendro-noaa-api`.
+1. Make this project directory the current directory, i.e. `cd dendra-noaa-ndfd-api`.
 
-2. Build the project `docker build -t dendro:dendro-noaa-api .`.
+2. Build the project `docker build -t dendra:dendra-noaa-ndfd-api .`.
 
-3. Tag the desired image, e.g. `docker tag f0ec409b5194 dendro/dendro-noaa-api:latest`.
+3. Tag the desired image, e.g. `docker tag f0ec409b5194 dendra/dendra-noaa-ndfd-api:latest`.
 
-4. Push it via `docker push dendro/dendro-noaa-api`.
+4. Push it via `docker push dendra/dendra-noaa-ndfd-api`.
