@@ -1,5 +1,5 @@
 {
-  "name": "dendra-noaa-ndfd-api",
+  "name": "dendra-noaa-nws-api",
   "version": "0.0.3",
   "description": "Dendra internal API to the NOAA NDFD REST web service.",
   "license": "BSD-2-Clause-FreeBSD",
@@ -7,7 +7,7 @@
   "main": "dist/server/main.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/DendraScience/dendra-noaa-ndfd-api.git"
+    "url": "https://github.com/DendraScience/dendra-noaa-nws-api.git"
   },
   "scripts": {
     "babel-server": "babel src/server -d dist/server",
