@@ -23,9 +23,8 @@ const tasks = require('./tasks')
 
 const app = feathers()
 
-// TODO: Winston is configured in middleware; deal with this
-// TODO: Replace logger with winston
-const log = console
+// TODO: Configure Winston
+const log = app.logger = winston
 
 // Configure
 app.configure(configuration())
