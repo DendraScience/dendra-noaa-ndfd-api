@@ -67,6 +67,7 @@ class Service {
         // TODO: Touch doc to keep in cache longer
         return doc
       }).catch(err => {
+        // FIX: We should throw?
         if (err.code !== 404) return err
 
         // Cached doc not found, so prepare a query for the NDFD service
@@ -85,10 +86,11 @@ class Service {
         if (doc._id) return doc
         doc._id = docId
 
-        return docService.create(doc)
+        // Only cache docs with parameters
+        return doc.parameters && (doc.parameters.length > 0) ? docService.create(doc) : doc
       }).then(doc => {
         // Find parameter in DWML doc
-        const found = doc.parameters.find(parameter => {
+        const found = doc.parameters && doc.parameters.find(parameter => {
           if (typeof query.parameter !== 'object') return false
           if (typeof query.parameter.key_path === 'string' && parameter.key_path.indexOf(query.parameter.key_path) !== 0) return false
           if (typeof query.parameter.name === 'string' && parameter.name !== query.parameter.name) return false

@@ -28,9 +28,7 @@ class Service {
     }
 
     return new Promise((resolve, reject) => {
-      request(requestOpts, (error, response) => {
-        error ? reject(error) : resolve(response)
-      })
+      request(requestOpts, (err, response) => err ? reject(err) : resolve(response))
     }).then(response => {
       if (response.statusCode !== 200) {
         return {
@@ -39,7 +37,6 @@ class Service {
         }
       }
 
-      // TODO: Better handling of parser errors?
       const xmlDoc = new DOMParser().parseFromString(response.body, 'text/xml')
 
       return new DWMLDocument(xmlDoc)
@@ -47,7 +44,7 @@ class Service {
       // Stay async-friendly
       return new Promise((resolve, reject) => {
         setImmediate(() => {
-          const parameters = dwmlDoc.parameters.map(parameter => parameter.toJSON())
+          const parameters = (dwmlDoc.parameters || []).map(parameter => parameter.toJSON())
 
           resolve({
             request_options: requestOpts,
@@ -55,6 +52,11 @@ class Service {
           })
         })
       })
+    }).catch(err => {
+      return {
+        request_options: requestOpts,
+        error: err.message
+      }
     })
   }
 }
